@@ -1,6 +1,7 @@
 from crewai.tools import tool
 
 from services.erp_client import obtener_analisis_inventario
+from rules.inventory_rules import analizar_producto
 
 
 @tool("Consultar Inventario ERP")
@@ -18,9 +19,27 @@ def obtener_alertas_stock(**kwargs) -> str:
         if not productos:
             return "No hay productos registrados en el ERP."
 
-        resultado = "INVENTARIO ACTUAL DEL ERP\n\n"
+        resultado = "PRODUCTOS QUE REQUIEREN ATENCIÓN\n\n"
+        productos_con_alerta = []
 
         for p in productos:
+
+            analisis = analizar_producto(p)
+
+            # El Monitor recibe únicamente productos sin stock, con riesgo
+            # distinto de NORMAL o con una cantidad de reposición positiva.
+            if (
+                analisis["nivel_riesgo"] == "NORMAL"
+                and not analisis["necesita_reposicion"]
+            ):
+                continue
+
+            productos_con_alerta.append((p, analisis))
+
+        if not productos_con_alerta:
+            return "No hay productos sin stock, con riesgo o que requieran reposición."
+
+        for p, analisis in productos_con_alerta:
 
             resultado += f"""
                 PRODUCTO: {p['nombre']}
@@ -32,8 +51,14 @@ def obtener_alertas_stock(**kwargs) -> str:
                 Stock máximo: {p['stock_maximo']}
 
                 Ventas últimos 30 días: {p['ventas_ultimos_30_dias']}
-                Demanda diaria promedio: {p['demanda_diaria']}
-                Días estimados hasta agotamiento: {p['dias_hasta_agotamiento']}
+                Demanda diaria promedio: {analisis['demanda_diaria']}
+                Días estimados hasta agotamiento: {analisis['dias_hasta_agotamiento']}
+                Nivel de riesgo: {analisis['nivel_riesgo']}
+                Necesita reposición: {analisis['necesita_reposicion']}
+                Stock de seguridad: {analisis['stock_seguridad']}
+                Stock objetivo: {analisis['stock_objetivo']}
+                Cantidad recomendada: {analisis['cantidad_recomendada']}
+                Momento de reposición: {analisis['momento_reposicion']}
 
                 Proveedor: {p['proveedor']}
                 Tiempo de entrega: {p['tiempo_entrega_dias']} días

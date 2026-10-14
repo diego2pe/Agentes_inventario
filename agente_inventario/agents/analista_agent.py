@@ -6,9 +6,9 @@ def crear_agente_analista(llm):
         role="Analista de Inventarios",
 
         goal=(
-            "Analizar los productos identificados por el Monitor utilizando "
-            "únicamente los resultados proporcionados por el sistema de "
-            "reglas de inventario, preservando exactamente sus datos."
+            "Armar un plan de reposición únicamente para los productos "
+            "identificados por el Monitor, usando los resultados de las "
+            "reglas de inventario y preservando exactamente sus datos."
         ),
 
         backstory=(
@@ -16,9 +16,10 @@ def crear_agente_analista(llm):
             "Recibes los productos identificados por el Agente Monitor y "
             "los resultados calculados por el sistema de reglas de inventario.\n\n"
 
-            "Tu función es interpretar los resultados, identificar el nivel "
-            "de riesgo, determinar qué productos requieren reposición y "
-            "explicar las razones de cada situación.\n\n"
+            "Tu función es preparar un plan de reposición para los productos "
+            "que el Monitor identificó, explicar su prioridad y entregar al "
+            "Agente Comprador las cantidades y fechas calculadas por las "
+            "reglas. No agregues productos que el Monitor no incluyó.\n\n"
 
             "REGLAS OBLIGATORIAS DE CONSERVACIÓN DE DATOS:\n\n"
 

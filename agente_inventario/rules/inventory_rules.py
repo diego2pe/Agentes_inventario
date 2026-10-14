@@ -46,6 +46,7 @@ def calcular_stock_objetivo(demanda_diaria, tiempo_entrega_dias):
 
 def calcular_cantidad_recomendada(
     stock_actual,
+    stock_minimo,
     stock_maximo,
     demanda_diaria,
     tiempo_entrega_dias
@@ -54,7 +55,7 @@ def calcular_cantidad_recomendada(
     Calcula la cantidad recomendada de reposición.
 
     Fórmula:
-        stock objetivo - stock actual
+        max(stock objetivo, stock mínimo) - stock actual
 
     La cantidad:
         - nunca puede ser negativa;
@@ -68,7 +69,8 @@ def calcular_cantidad_recomendada(
         tiempo_entrega_dias
     )
 
-    cantidad_teorica = stock_objetivo - stock_actual
+    objetivo_reposicion = max(stock_objetivo, stock_minimo)
+    cantidad_teorica = objetivo_reposicion - stock_actual
 
     if cantidad_teorica <= 0:
         return 0
@@ -86,20 +88,27 @@ def calcular_cantidad_recomendada(
     )
 
 
-def clasificar_riesgo(stock_actual, dias_hasta_agotamiento):
+def clasificar_riesgo(stock_actual, stock_minimo, dias_hasta_agotamiento):
     """
     Clasifica el nivel de riesgo del producto.
 
     Reglas:
-        stock = 0              -> SIN STOCK
-        días <= 2              -> CRÍTICO
-        2 < días <= 5          -> ALTO
-        5 < días <= 7          -> MEDIO
-        días > 7               -> NORMAL
+        stock = 0                   -> SIN STOCK
+        stock < stock mínimo        -> CRÍTICO
+        días <= 2                   -> CRÍTICO
+        2 < días <= 5               -> ALTO
+        5 < días <= 7               -> MEDIO
+        días > 7                    -> NORMAL
+
+    Si el stock es igual al mínimo, se clasifica usando los días
+    estimados hasta agotamiento.
     """
 
     if stock_actual == 0:
         return "SIN STOCK"
+
+    if stock_actual < stock_minimo:
+        return "CRÍTICO"
 
     if dias_hasta_agotamiento is None:
         return "NORMAL"
@@ -162,6 +171,7 @@ def analizar_producto(producto):
     """
 
     stock_actual = int(producto["stock_actual"])
+    stock_minimo = int(producto["stock_minimo"])
     stock_maximo = int(producto["stock_maximo"])
     ventas_30_dias = int(producto["ventas_ultimos_30_dias"])
     tiempo_entrega = int(producto["tiempo_entrega_dias"])
@@ -183,6 +193,7 @@ def analizar_producto(producto):
 
     nivel_riesgo = clasificar_riesgo(
         stock_actual,
+        stock_minimo,
         dias_hasta_agotamiento
     )
 
@@ -203,6 +214,7 @@ def analizar_producto(producto):
 
     cantidad_recomendada = calcular_cantidad_recomendada(
         stock_actual,
+        stock_minimo,
         stock_maximo,
         demanda_diaria,
         tiempo_entrega
@@ -227,7 +239,7 @@ def analizar_producto(producto):
         "producto": producto["nombre"],
 
         "stock_actual": stock_actual,
-        "stock_minimo": int(producto["stock_minimo"]),
+        "stock_minimo": stock_minimo,
         "stock_maximo": stock_maximo,
 
         "ventas_ultimos_30_dias": ventas_30_dias,

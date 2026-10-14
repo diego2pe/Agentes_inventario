@@ -8,11 +8,12 @@ app = FastAPI(title="API ERP - Gestión Inteligente de Inventarios")
 @app.get("/api/inventario/analisis-riesgo")
 def analizar_riesgo_inventario(_api_key: None = Depends(validar_api_key)):
     """
-    Consulta la información actual del inventario y las ventas
-    de los últimos 30 días.
+    Consulta únicamente los datos almacenados en el inventario,
+    proveedores y ventas de los últimos 30 días. Los cálculos de
+    demanda y riesgo se realizan en las reglas del sistema.
 
-    La API entrega los datos necesarios para que los agentes
-    Monitor, Analista y Comprador puedan realizar sus funciones.
+    La API no calcula demanda, riesgo ni cantidades de reposición;
+    devuelve los campos base para que el sistema aplique sus reglas.
     """
 
     conexion = obtener_conexion()
@@ -76,23 +77,6 @@ def analizar_riesgo_inventario(_api_key: None = Depends(validar_api_key)):
 
                 ventas_30_dias = int(p["ventas_ultimos_30_dias"])
 
-                # Regla 1:
-                # Demanda diaria promedio
-                demanda_diaria = round(
-                    ventas_30_dias / 30,
-                    2
-                )
-
-                # Regla 2:
-                # Días estimados hasta agotamiento
-                if demanda_diaria > 0:
-                    dias_hasta_agotamiento = round(
-                        stock_actual / demanda_diaria,
-                        2
-                    )
-                else:
-                    dias_hasta_agotamiento = None
-
                 producto = {
                     "id": int(p["id"]),
                     "nombre": p["nombre"],
@@ -111,8 +95,6 @@ def analizar_riesgo_inventario(_api_key: None = Depends(validar_api_key)):
                     ),
 
                     "ventas_ultimos_30_dias": ventas_30_dias,
-                    "demanda_diaria": demanda_diaria,
-                    "dias_hasta_agotamiento": dias_hasta_agotamiento
                 }
 
                 productos.append(producto)

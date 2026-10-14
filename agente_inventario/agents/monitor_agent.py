@@ -6,17 +6,19 @@ def crear_agente_monitor(llm):
     return Agent(
         role="Monitor de Inventarios",
         goal=(
-            "Supervisar el inventario del ERP e identificar los productos "
-            "que requieren un análisis más detallado debido a su nivel de "
-            "stock, demanda o proximidad al agotamiento."
+            "Consultar los productos del ERP mediante la herramienta "
+            "disponible y reportar solo aquellos que, según las reglas "
+            "determinísticas del sistema, están sin stock, tienen riesgo "
+            "o requieren reposición."
         ),
         backstory=(
             "Eres un especialista en monitoreo de inventarios. "
-            "Tu función es revisar la información actual del ERP, detectar "
-            "productos que presentan señales de riesgo y entregar una lista "
-            "clara al Agente Analista para que este realice el análisis "
-            "correspondiente. No calculas cantidades de compra ni generas "
-            "órdenes de compra."
+            "Usas la herramienta Consultar Inventario ERP, que obtiene los "
+            "datos actuales y aplica las reglas determinísticas de inventario. "
+            "Debes conservar exactamente los productos, valores y motivos "
+            "devueltos por la herramienta, sin inventar ni recalcular datos. "
+            "Entregas esa lista al Agente Analista. No armas el plan de compra "
+            "ni generas órdenes de compra."
         ),
         llm=llm,
         tools=[obtener_alertas_stock],

@@ -13,11 +13,13 @@ def crear_agente_comprador(llm):
 
         backstory=(
             "Eres el encargado de compras de una empresa. "
-            "Recibes el análisis realizado por el Agente Analista y los "
-            "resultados calculados por el sistema de reglas de inventario.\n\n"
+            "Recibes el plan de reposición realizado por el Agente Analista, "
+            "con productos previamente filtrados por el Monitor mediante "
+            "las reglas determinísticas de inventario.\n\n"
 
-            "Tu función es convertir esa información en una recomendación "
-            "de compra clara, precisa y explicable.\n\n"
+            "Tu función es presentar ese plan al usuario como una "
+            "recomendación clara, precisa y explicable. No agregues "
+            "productos que no aparezcan en el plan del Analista.\n\n"
 
             "REGLAS OBLIGATORIAS:\n\n"
 
