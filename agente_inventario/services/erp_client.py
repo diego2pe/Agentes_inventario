@@ -15,7 +15,7 @@ def obtener_analisis_inventario():
     if not api_key:
         raise RuntimeError("Falta configurar ERP_API_KEY en el entorno de la aplicación.")
 
-    base_url = os.getenv("ERP_API_BASE_URL", "https://agente-inventario-zt0o.onrender.com/docs").rstrip("/")
+    base_url = os.getenv("ERP_API_BASE_URL").rstrip("/")
     response = requests.get(
         f"{base_url}/api/inventario/analisis-riesgo",
         headers={"X-API-Key": api_key},
