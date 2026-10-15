@@ -1,4 +1,4 @@
-crewai==1.15.18
+crewai[google-genai]==1.15.18
 fastapi==0.141.1
 PyMySQL==1.1.1
 Requests==2.34.2
