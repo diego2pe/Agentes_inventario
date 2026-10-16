@@ -17,8 +17,8 @@ def obtener_conexion():
         raise Exception("AIVEN_DB_PASSWORD no está configurada")
 
     return pymysql.connect(
-        host="mysql-112ce839-angeloticlla-66f3.d.aivencloud.com",
-        port=26634,
+        host="mysql-3daf335-angeloticlla16-2be8.j.aivencloud.com",
+        port=15569,
         user="avnadmin",
         password=password,
         database="defaultdb",
