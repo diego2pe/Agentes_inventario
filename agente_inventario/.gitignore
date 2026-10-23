@@ -8,6 +8,7 @@ __pycache__/
 # Variables de entorno y secretos
 .env
 .env.*
+!.env.example
 
 # Archivos temporales
 *.log
