@@ -5,6 +5,11 @@ from config_erp.api_security import validar_api_key
 app = FastAPI(title="API ERP - Gestión Inteligente de Inventarios")
 
 
+@app.get("/health", tags=["health"], include_in_schema=True)
+def health():
+    return {"status": "ok"}
+
+
 @app.get("/api/inventario/analisis-riesgo")
 def analizar_riesgo_inventario(_api_key: None = Depends(validar_api_key)):
     """
