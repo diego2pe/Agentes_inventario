@@ -69,7 +69,7 @@ def ejecutar_orquestacion():
 
             agent=monitor
         )
-
+        inicio = time.perf_counter()
         resultado1 = t1.execute_sync()
 
         print("Monitor completado")
@@ -245,7 +245,10 @@ def ejecutar_orquestacion():
         )
 
         resultado3 = t3.execute_sync()
+        fin = time.perf_counter()
+        tiempo_total = fin - inicio
 
+        print(f"Tiempo total de ejecución: {tiempo_total:.2f} segundos")
         print("Comprador completado")
 
         # RESULTADOS
