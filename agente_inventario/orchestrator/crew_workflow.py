@@ -248,8 +248,8 @@ def ejecutar_orquestacion():
         fin = time.perf_counter()
         tiempo_total = fin - inicio
 
-        print(f"Tiempo total de ejecución: {tiempo_total:.2f} segundos")
-        print("Comprador completado")
+        print(f"Tiempo total de ejecución: {tiempo_total:.2f} segundos", flush=True)
+        print("Comprador completado", flush=True)
 
         # RESULTADOS
      
